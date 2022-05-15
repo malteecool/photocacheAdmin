@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js';
-import { get, getDatabase, ref, child } from 'https://www.gstatic.com/firebasejs/9.8.0/firebase-database.js';
+import { set, get, remove, getDatabase, ref, child } from 'https://www.gstatic.com/firebasejs/9.8.0/firebase-database.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCqnYvcans3bXosGh9k24hruUv0LKGHq8U",
@@ -14,9 +14,9 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const dbRef = ref(db);
 
 async function onLoad() {
-    const dbRef = ref(db);
     get(child(dbRef, 'cache')).then((snapshot) => {
         if (snapshot.exists()) {
             for (let x in snapshot.val()) {
@@ -47,28 +47,23 @@ function fillCacheData(cache) {
 
     cardDiv.appendChild(cardInnerDiv);
 
-    // buttonline
-
-    // div button line
-
     const buttonLineDiv = document.createElement("div");
     buttonLineDiv.setAttribute("class", "button-line");
-
     const div1 = document.createElement("div");
-    const link1 = document.createElement("a");
-    link1.setAttribute("href", "#");
     const img1 = document.createElement("img");
     img1.setAttribute("src", "icons/edit.svg");
-    link1.appendChild(img1);
-    div1.appendChild(link1);
-    
+    div1.appendChild(img1);
+    div1.onclick = function() {
+        editCache(cache.title);
+    };
+
     const div2 = document.createElement("div");
-    const link2 = document.createElement("a");
-    link2.setAttribute("href", "#");
     const img2 = document.createElement("img");
     img2.setAttribute("src", "icons/trash-2.svg");
-    link2.appendChild(img2);
-    div2.appendChild(link2);
+    div2.appendChild(img2);
+    div2.onclick = function() {
+        removeCache(cache.title);
+    };
 
     buttonLineDiv.appendChild(div1);
     buttonLineDiv.appendChild(div2);
@@ -76,8 +71,9 @@ function fillCacheData(cache) {
     cardDiv.appendChild(buttonLineDiv);
 
     document.getElementById("cards").appendChild(cardDiv);
-
-
+    document.getElementById("addcachebutton").onclick = function() {
+        addCache();
+    }
 }
 
 function buildCardImage(ImageId) {
@@ -104,32 +100,29 @@ function buildCardDescription(desc) {
     return cardDescription;
 }
 
-function buildButtonLine() {
-    const buttonLineDiv = document.createElement("div");
-    buttonLineDiv.setAttribute("class", "button-line");
-
-    const editButton = document.createElement("a");
-    editButton.setAttribute("href", "details.html");
-    const editIcon = document.createElement("img");
-    editIcon.setAttribute("src", "icons/edit.svg");
-    editIcon.setAttribute("alt", "Edit");
-    editButton.appendChild(editIcon);
-
-    const removeButton = document.createElement("a");
-    removeButton.setAttribute("href", "#");
-    const removeIcon = document.createElement("img");
-    removeIcon.setAttribute("src", "icons/trash-2.svg");
-    removeIcon.setAttribute("alt", "Remove");
-    removeButton.appendChild(removeIcon);
-
-
-    buttonLineDiv.appendChild(editButton);
-    buttonLineDiv.appendChild(removeButton);
-
-    return buttonLineDiv;
+function editCache() {
+    console.log("edit cache");
 }
 
+function addCache() {
+    // can be used for both edit and add
+    console.log("Add cache");
+    set(child(dbRef, `cache/${"cache4"}`), {
+        coords: "0,0",
+        desc: "test description4",
+        id: 4,
+        imageID: "img4.jpg",
+        title: "cache4"
+    });
+}
 
+function removeCache(cacheTitle) {
+    remove(child(dbRef, `cache/${cacheTitle}`)).then(() => {
+        console.log("Cache removed.");
+    }).catch((error) => {
+        console.error(error);
+    });
+}
 
 
 onLoad();
