@@ -29,7 +29,30 @@
                 </div>
             </div>
         </div>
-        <button id="addcachebutton">Add Cache</button>
+
+        <button id="addButton" onclick="openForm()">Add Cache</button>
+
+        <div class="form-popup" id="myForm">
+            <form action="#" class="form-container">
+                <h1>Edit</h1>
+
+                <label for="title">Image</label>
+                <input type="text" placeholder="image" id="imageInput" required>
+
+                <label for="title">Title</label>
+                <input type="text" placeholder="Title" id="titleInput" required>
+
+                <label for="desc">Description</label>
+                <input type="text" placeholder="Description" id="descriptionInput" required>
+                
+                <label for="coordinates">Coordinates (0.0, 0.0)</label>
+                <input type="text" placeholder="coordinates" id="coordinatesInput" required>
+
+                <button type="submit" class="btn" id="saveButton">Save</button>
+                <button type="button" class="btn cancel" id="closeButton">Close</button>
+            </form>
+        </div>
+
     </div>
     <script name="cacheHandler" src="cacheHandler.js" type="module"></script>
 </body>

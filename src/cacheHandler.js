@@ -54,7 +54,8 @@ function fillCacheData(cache) {
     img1.setAttribute("src", "icons/edit.svg");
     div1.appendChild(img1);
     div1.onclick = function() {
-        editCache(cache.title);
+        setFields(cache);
+        openForm();
     };
 
     const div2 = document.createElement("div");
@@ -71,8 +72,16 @@ function fillCacheData(cache) {
     cardDiv.appendChild(buttonLineDiv);
 
     document.getElementById("cards").appendChild(cardDiv);
-    document.getElementById("addcachebutton").onclick = function() {
+    document.getElementById("addButton").onclick = function() {
+        openForm();
+    }
+    document.getElementById("closeButton").onclick = function() {
+        closeForm();
+    }
+
+    document.getElementById("saveButton").onclick = function() {
         addCache();
+        console.log("Saved");
     }
 }
 
@@ -100,20 +109,16 @@ function buildCardDescription(desc) {
     return cardDescription;
 }
 
-function editCache() {
-    console.log("edit cache");
-}
-
 function addCache() {
     // can be used for both edit and add
-    console.log("Add cache");
-    set(child(dbRef, `cache/${"cache4"}`), {
-        coords: "0,0",
-        desc: "test description4",
-        id: 4,
-        imageID: "img4.jpg",
-        title: "cache4"
+    set(child(dbRef, `cache/${document.getElementById("titleInput").value}`), {
+        coords: document.getElementById("coordinatesInput").value,
+        desc: document.getElementById("descriptionInput").value,
+        id: -1,
+        imageID: document.getElementById("imageInput").value,
+        title: document.getElementById("titleInput").value
     });
+    updateUI();
 }
 
 function removeCache(cacheTitle) {
@@ -122,7 +127,35 @@ function removeCache(cacheTitle) {
     }).catch((error) => {
         console.error(error);
     });
+    updateUI();
 }
 
+function updateUI() {
+    // build individual card?
+    document.getElementById("cards").innerHTML = "";
+    onLoad();
+
+}
+
+function setFields(cache) {
+    document.getElementById("imageInput").value = cache.imageID;
+    document.getElementById("titleInput").value = cache.title;
+    document.getElementById("descriptionInput").value = cache.desc;
+    document.getElementById("coordinatesInput").value = cache.coords;
+}
+
+function openForm() {
+  document.getElementById("myForm").style.display = "block";
+  document.getElementById("addButton").style.display = "none";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+  document.getElementById("addButton").style.display = "block";
+  document.getElementById("imageInput").value = "";
+  document.getElementById("titleInput").value = "";
+  document.getElementById("descriptionInput").value = "";
+  document.getElementById("coordinatesInput").value = "";
+}
 
 onLoad();
